@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  /* ألوان إيكو فيلا الرسمية */
+  --color-sage: #B5A5A9;
+  --color-basalt: #232528;
+  --color-lavender: #BFA7E8;
+  --color-persimmon: #FF7E5F;
+}
+
+/* أخفينا شريط التمرير (Scrollbar) المزعج ليعطي إحساس تطبيق الموبايل */
+::-webkit-scrollbar {
+  display: none;
+}

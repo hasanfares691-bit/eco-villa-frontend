@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://220fdb02-6cca-4add-87ac-a06672b4c066-00-ub7pyb0o0yo0.picard.replit.dev/';export interface ApiError {
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://220fdb02-6cca-4add-87ac-a06672b4c066-00-ub7pyb0o0yo0.picard.replit.dev/api';export interface ApiError {
   message: string;
   statusCode: number;
 }

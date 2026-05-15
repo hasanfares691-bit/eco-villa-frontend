@@ -6,8 +6,8 @@ import { api } from '../../../lib/api';
 
 export default function AdminLogin() {
   const router = useRouter();
-  const [phoneWa, setPhoneWa] = useState('963900000000'); // حساب المدير العام
-  const [password, setPassword] = useState('123456');
+  const [phoneWa, setPhoneWa] = useState(''); // حساب المدير العام
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 

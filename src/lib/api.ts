@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://eco-villa-backend--hasanfares691.replit.app/api';
+const API_BASE_URL = 'http://127.0.0.1:3001/api';
+
 export interface ApiError {
   message: string;
   statusCode: number;
@@ -8,16 +9,14 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
   const url = `${API_BASE_URL}${endpoint}`;
   try {
     const response = await fetch(url, {
-      cache: 'no-store', // 🔴 هاد هو السطر السحري اللي بيمنع تخزين البيانات القديمة!
+      cache: 'no-store', // منع تخزين البيانات القديمة
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'Bypass-Tunnel-Reminder': 'true',
         ...options.headers,
       },
     });
-// ... باقي الكود مثل ما هو بدون تغيير
-// ... باقي الكود كما هو
+
     const text = await response.text();
     let data;
     try {
@@ -37,7 +36,6 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
 
     return data.data !== undefined ? data.data : data;
   } catch (error: any) {
-    // تم التعديل هنا لطباعة الخطأ الحقيقي بدلاً من كائن فارغ
     console.error(`[API Client Fetch Error] (${endpoint}):`, error.message || error);
     throw error;
   }
@@ -107,7 +105,7 @@ export const api = {
     });
   },
 
-  // --- دوال إنشاء المزارع والحجوزات (المضافة حديثاً) ---
+  // --- دوال إنشاء المزارع والحجوزات ---
   createFarmAdmin: (farmData: any, token: string) => {
     return fetchApi<any>('/farms', {
       method: 'POST',
@@ -166,7 +164,6 @@ export const api = {
     });
   },
 
-  // 🚀 الدوال المفقودة التي تسبب الخطأ في واجهة الحجوزات 
   createBookingAdmin: (bookingData: any, token?: string) => {
     const headers: any = {};
     if (token) headers.Authorization = `Bearer ${token}`;
@@ -194,11 +191,8 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     });
-    
   },
   getFarmReviewsPublic: (farmId: string | number) => {
     return fetchApi<any[]>(`/reviews/public/${farmId}`);
   },
-
-
-}
+};

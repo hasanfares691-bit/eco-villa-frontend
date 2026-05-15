@@ -55,12 +55,10 @@ const InstagramIcon = () => <svg className="w-5 h-5 text-gray-500 hover:text-pin
 const TwitterIcon = () => <svg className="w-5 h-5 text-gray-500 hover:text-black transition" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>;
 const TelegramIcon = () => <svg className="w-5 h-5 text-gray-500 hover:text-[#2AABEE] transition" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.03-1.93 1.23-5.46 3.62-.51.35-.98.52-1.4.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.23.29-.48.78-.73 3.02-1.31 5.05-2.18 6.08-2.61 2.89-1.2 3.49-1.38 3.89-1.39.09 0 .28.02.39.11.09.07.13.17.15.28 0 .04.01.19.01.27z"/></svg>;
 
-// --- Fallback Mock Data in case DB is empty ---
+// --- Fallback Mock Data ---
 const MOCK_FARMS: Farm[] = [
   { id: 1, title: "شاليه الأحلام الملكي", location: "ريف دمشق، يعفور", price: "2,500,000", badgeText: "الأكثر اعتماداً", badgeIcon: "🎖️", images: ["https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80"], features: [{ text: '3 غرف', icon: <BedIcon /> }, { text: '12 شخص', icon: <UsersIcon /> }, { text: 'مسبح مفلتر', icon: <DropletIcon /> }] },
 ];
-
-const FILTERS = ["الكل", "مسابح شتوية 🏊‍♂️", "عائلية 👨‍👩‍👧‍👦", "عروض اللحظة ⏳"];
 
 // --- Component: Farm Card ---
 const FarmCard = ({ farm }: { farm: Farm }) => {
@@ -78,19 +76,19 @@ const FarmCard = ({ farm }: { farm: Farm }) => {
   };
 
   return (
-    <Link href={`/farms/${farm.id}`} className="block mb-8 outline-none">
+    <Link href={`/farms/${farm.id}`} className="block outline-none h-full">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden relative cursor-pointer hover:shadow-[0_10px_40px_rgb(0,0,0,0.08)] transition-shadow"
+        className="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden relative cursor-pointer hover:shadow-[0_10px_40px_rgb(0,0,0,0.12)] transition-all md:rounded-[2.5rem] lg:rounded-[3rem] h-full flex flex-col group"
       >
-        <div className="relative w-full aspect-video bg-gray-200 group">
+        <div className="relative w-full aspect-video bg-gray-200 shrink-0">
           <AnimatePresence initial={false} mode="wait">
             <motion.img 
               key={imgIndex}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
-              src={farm.images[imgIndex]} alt={farm.title} className="absolute inset-0 w-full h-full object-cover" 
+              src={farm.images[imgIndex]} alt={farm.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
             />
           </AnimatePresence>
 
@@ -105,7 +103,7 @@ const FarmCard = ({ farm }: { farm: Farm }) => {
               </div>
             </>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none"></div>
           {farm.badgeText && (
             <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-[#232528] text-[11px] px-3 py-1.5 rounded-full font-bold shadow-lg flex items-center gap-1 border border-gray-100">
               <span className="text-sm">{farm.badgeIcon}</span> {farm.badgeText}
@@ -113,28 +111,30 @@ const FarmCard = ({ farm }: { farm: Farm }) => {
           )}
         </div>
 
-        <div className="p-5">
-          <h2 style={{ color: PERSIMMON }} className="text-[28px] font-black leading-none mb-1">
+        <div className="p-5 md:p-6 lg:p-8 flex flex-col grow">
+          <h2 style={{ color: PERSIMMON }} className="text-[24px] md:text-[28px] font-black leading-none mb-1">
             {farm.price} <span className="text-sm font-bold opacity-70">ل.س / ليلة</span>
           </h2>
-          <h3 className="text-xl font-bold text-[#232528] mt-2">{farm.title}</h3>
-          <p className="text-sm text-gray-500 mb-4">{farm.location}</p>
+          <h3 className="text-lg md:text-xl font-bold text-[#232528] mt-2 line-clamp-1">{farm.title}</h3>
+          <p className="text-xs md:text-sm text-gray-500 mb-4">{farm.location}</p>
 
           <div className="flex flex-wrap gap-2 mb-6">
             {farm.features.map((feat: Feature, idx: number) => (
-              <span key={idx} className="flex items-center gap-1.5 text-xs font-bold text-gray-600 bg-gray-50 px-3 py-2 rounded-xl border border-gray-100">
+              <span key={idx} className="flex items-center gap-1.5 text-[11px] md:text-xs font-bold text-gray-600 bg-gray-50 px-3 py-2 rounded-xl border border-gray-100">
                 {feat.icon} {feat.text}
               </span>
             ))}
           </div>
 
-          <motion.button 
-            whileTap={{ scale: 0.96 }}
-            style={{ backgroundColor: PERSIMMON }}
-            className="w-full h-[60px] text-white rounded-2xl font-extrabold text-[17px] shadow-[0_8px_20px_rgba(255,126,95,0.3)] flex justify-center items-center gap-2"
-          >
-            احجز الآن بأمان
-          </motion.button>
+          <div className="mt-auto pt-2">
+            <motion.button 
+              whileTap={{ scale: 0.96 }}
+              style={{ backgroundColor: PERSIMMON }}
+              className="w-full h-[55px] md:h-[60px] text-white rounded-2xl font-extrabold text-[16px] md:text-[17px] shadow-[0_8px_20px_rgba(255,126,95,0.3)] hover:shadow-[0_12px_25px_rgba(255,126,95,0.4)] transition-all flex justify-center items-center gap-2"
+            >
+              احجز الآن بأمان
+            </motion.button>
+          </div>
         </div>
       </motion.div>
     </Link>
@@ -144,15 +144,12 @@ const FarmCard = ({ farm }: { farm: Farm }) => {
 
 // --- Main App Component ---
 export default function App() {
-  const [activeFilter, setActiveFilter] = useState<string>("الكل");
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [showLoginHint, setShowLoginHint] = useState<boolean>(false);
-
-  // --- Real Data States ---
   const [farmsList, setFarmsList] = useState<Farm[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // --- Search Filter States ---
+  // Filters
   const [filterDate, setFilterDate] = useState<string>('');
   const [filterRegion, setFilterRegion] = useState<string>('');
   const [filterGuestType, setFilterGuestType] = useState<string>('');
@@ -165,20 +162,14 @@ export default function App() {
   };
 
   const clearFilters = () => {
-    setFilterDate('');
-    setFilterRegion('');
-    setFilterGuestType('');
-    setFilterCapacity('');
-    setFilterPrice('');
+    setFilterDate(''); setFilterRegion(''); setFilterGuestType(''); setFilterCapacity(''); setFilterPrice('');
   };
 
-  // --- 🌟 Fetch Real Data from Backend ---
   const loadFarms = async (searchParams?: any) => {
     setIsLoading(true);
     try {
       const data = await api.getFarms(searchParams);
       if (data && data.length > 0) {
-        // Map Database schema to UI schema
         const mappedFarms = data.map((item: any) => ({
           id: item.id,
           title: item.name,
@@ -194,133 +185,125 @@ export default function App() {
         }));
         setFarmsList(mappedFarms);
       } else {
-        setFarmsList([]); // Empty state
+        setFarmsList([]); 
       }
     } catch (error) {
       console.error("Failed to load farms from backend, using mock data", error);
-      setFarmsList(MOCK_FARMS); // Fallback to mock if backend is down
+      setFarmsList(MOCK_FARMS); 
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Initial Load
-  useEffect(() => {
-    loadFarms();
-  }, []);
+  useEffect(() => { loadFarms(); }, []);
 
   const handleSearchSubmit = () => {
     setIsDrawerOpen(false);
-    // Passing date filter to the API
     loadFarms({ startDate: filterDate, endDate: filterDate ? new Date(new Date(filterDate).getTime() + 86400000).toISOString().split('T')[0] : undefined });
   };
 
   return (
-    <div dir="rtl" className="max-w-md mx-auto min-h-screen bg-[#F8F9FA] relative font-sans overflow-x-hidden selection:bg-[#7CB342]/30">
+    // 🔴 تم إزالة القيود الضيقة (max-w) ليأخذ الموقع العرض بالكامل
+    <div dir="rtl" className="min-h-screen bg-[#F8F9FA] relative font-sans overflow-x-hidden selection:bg-[#7CB342]/30 pb-[100px] lg:pb-10">
       
-      <header className="pt-10 pb-4 px-5 bg-white rounded-b-[2rem] shadow-[0_10px_40px_rgb(0,0,0,0.03)] relative z-10 overflow-hidden">
-        <div className="flex items-center justify-between mb-6">
-          <motion.h1 
-            initial={{ scale: 0.8, opacity: 0, rotate: 5 }}
-            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 350, damping: 15, delay: 0.1 }}
-            style={{ color: ECO_GREEN }}
-            className="text-[19px] sm:text-xl font-extrabold tracking-tight whitespace-nowrap"
-          >
-            بأي مزرعة حابين تنبسطو؟ 😎
-          </motion.h1>
+      {/* 🔴 الهيدر صار عريض، لكن المحتوى اللي جواته متمركز بالوسط */}
+      <header className="bg-white rounded-b-[2rem] lg:rounded-b-[3rem] shadow-[0_10px_40px_rgb(0,0,0,0.03)] relative z-10">
+        <div className="max-w-7xl mx-auto pt-10 pb-5 px-5 md:pt-12 md:pb-8 lg:pt-14 lg:pb-10 lg:px-12">
+          <div className="flex items-center justify-between mb-6 lg:mb-8">
+            <motion.h1 
+              initial={{ scale: 0.8, opacity: 0, rotate: 5 }} animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 350, damping: 15, delay: 0.1 }}
+              style={{ color: ECO_GREEN }}
+              className="text-[19px] sm:text-2xl lg:text-3xl font-extrabold tracking-tight whitespace-nowrap"
+            >
+              بأي مزرعة حابين تنبسطو؟ 😎
+            </motion.h1>
+            <motion.div initial={{ scale: 0, rotate: -25, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="shrink-0">
+              <EcoVillaLogo />
+            </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ scale: 0, rotate: -25, opacity: 0 }}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 400, damping: 12, delay: 0.2 }}
-            className="shrink-0"
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
+            whileTap={{ scale: 0.98 }} onClick={() => setIsDrawerOpen(true)}
+            className="bg-gray-50 text-gray-500 rounded-2xl py-4 px-4 shadow-sm border border-gray-100 flex items-center gap-3 cursor-pointer md:py-5 md:px-5 lg:py-6 lg:px-8 hover:bg-gray-100 transition-colors"
           >
-            <EcoVillaLogo />
+            <SearchIcon />
+            <span className="font-medium text-sm lg:text-lg">ابحث عن منطقة، أو ميزة...</span>
           </motion.div>
         </div>
-
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
-          whileTap={{ scale: 0.98 }} onClick={() => setIsDrawerOpen(true)}
-          className="bg-gray-50 text-gray-500 rounded-2xl py-4 px-4 shadow-sm border border-gray-100 flex items-center gap-3 cursor-pointer"
-        >
-          <SearchIcon />
-          <span className="font-medium text-sm">ابحث عن منطقة، أو ميزة...</span>
-        </motion.div>
       </header>
 
-      <main className="px-5 pt-6">
-        {/* تم إخفاء شريط الفلاتر (المسابح الشتوية الخ) بناءً على طلبك مؤقتاً */}
-
-        {/* --- Render Loading, Empty, or Real Farms --- */}
-        <div className="mt-2 min-h-[40vh]">
+      {/* 🔴 المحتوى الأساسي تم وضع قيود له ليتمركز في الشاشات الكبيرة */}
+      <main className="max-w-7xl mx-auto px-5 pt-8 md:px-8 md:pt-10 lg:px-12 lg:pt-12">
+        <div className="min-h-[40vh]">
           {isLoading ? (
-             <div className="flex flex-col items-center justify-center pt-10 opacity-60">
-               <div className="w-10 h-10 border-4 border-[#7CB342] border-t-transparent rounded-full animate-spin mb-4"></div>
-               <p className="text-gray-500 font-bold text-sm">جاري جلب المزارع...</p>
+             <div className="flex flex-col items-center justify-center pt-20 opacity-60">
+               <div className="w-12 h-12 border-4 border-[#7CB342] border-t-transparent rounded-full animate-spin mb-4"></div>
+               <p className="text-gray-500 font-bold text-sm lg:text-base">جاري جلب المزارع...</p>
              </div>
           ) : farmsList.length === 0 ? (
-             <div className="text-center pt-10 opacity-70">
-               <span className="text-4xl mb-3 block">🏜️</span>
-               <p className="text-gray-600 font-bold text-lg">لا يوجد مزارع متاحة</p>
-               <p className="text-gray-400 text-sm mt-1">جرب تغيير شروط البحث من الدرج السفلي</p>
+             <div className="text-center pt-20 opacity-70">
+               <span className="text-5xl lg:text-6xl mb-4 block">🏜️</span>
+               <p className="text-gray-600 font-bold text-xl lg:text-2xl">لا يوجد مزارع متاحة</p>
+               <p className="text-gray-400 text-sm lg:text-base mt-2">جرب تغيير شروط البحث من الدرج السفلي</p>
              </div>
           ) : (
-            farmsList.map((farm: Farm) => (
-              <FarmCard key={farm.id} farm={farm} />
-            ))
+            // 🔴 السحر هون: شبكة المزارع تتحول من عمود واحد لـ 3 أعمدة
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+              {farmsList.map((farm: Farm) => (
+                <FarmCard key={farm.id} farm={farm} />
+              ))}
+            </div>
           )}
         </div>
 
-        <div className="mt-8 pt-6 border-t border-gray-200 text-center pb-[100px]">
-           <h4 className="text-sm font-bold text-gray-400 mb-4">تواصل معنا وتابع جديدنا</h4>
-           <div className="flex justify-center gap-5">
-              <a href="https://www.facebook.com/profile.php?id=61578564576992" target="_blank" rel="noreferrer" className="p-2 bg-white rounded-full shadow-sm text-gray-400 hover:text-[#1877F2] transition-colors"><FacebookIcon /></a>
-              <a href="https://www.instagram.com/ecovilla_sy?igsh=a3V3NWNoYnJvNzA4" target="_blank" rel="noreferrer" className="p-2 bg-white rounded-full shadow-sm text-gray-400 hover:text-[#E1306C] transition-colors"><InstagramIcon /></a>
-              <a href="https://x.com/EcoVilla2025" target="_blank" rel="noreferrer" className="p-2 bg-white rounded-full shadow-sm text-gray-400 hover:text-black transition-colors"><TwitterIcon /></a>
-              <a href="https://t.me/Ecovilla1" target="_blank" rel="noreferrer" className="p-2 bg-white rounded-full shadow-sm text-gray-400 hover:text-[#2AABEE] transition-colors"><TelegramIcon /></a>
+        <div className="mt-12 pt-8 border-t border-gray-200 text-center pb-8 lg:mt-20">
+           <h4 className="text-sm lg:text-base font-bold text-gray-400 mb-6">تواصل معنا وتابع جديدنا</h4>
+           <div className="flex justify-center gap-5 lg:gap-6">
+              <a href="https://www.facebook.com/profile.php?id=61578564576992" target="_blank" rel="noreferrer" className="p-3 lg:p-4 bg-white rounded-full shadow-sm text-gray-400 hover:text-[#1877F2] transition-colors"><FacebookIcon /></a>
+              <a href="https://www.instagram.com/ecovilla_sy?igsh=a3V3NWNoYnJvNzA4" target="_blank" rel="noreferrer" className="p-3 lg:p-4 bg-white rounded-full shadow-sm text-gray-400 hover:text-[#E1306C] transition-colors"><InstagramIcon /></a>
+              <a href="https://x.com/EcoVilla2025" target="_blank" rel="noreferrer" className="p-3 lg:p-4 bg-white rounded-full shadow-sm text-gray-400 hover:text-black transition-colors"><TwitterIcon /></a>
+              <a href="https://t.me/Ecovilla1" target="_blank" rel="noreferrer" className="p-3 lg:p-4 bg-white rounded-full shadow-sm text-gray-400 hover:text-[#2AABEE] transition-colors"><TelegramIcon /></a>
            </div>
-           <p className="text-xs text-gray-400 mt-5 mb-6 font-medium">© 2026 إيكو فيلا. جميع الحقوق محفوظة.</p>
+           <p className="text-xs lg:text-sm text-gray-400 mt-6 font-medium">© 2026 إيكو فيلا. جميع الحقوق محفوظة.</p>
         </div>
       </main>
 
-      {/* Floating Action Buttons */}
+      {/* زر الواتساب */}
       <motion.a
-        href="https://wa.me/963940457043"
-        target="_blank"
+        href="https://wa.me/963940457043" target="_blank" rel="noreferrer"
         initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.5 }}
-        whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-        style={{ backgroundColor: WHATSAPP_GREEN }}
-        className="fixed bottom-[90px] right-5 w-[52px] h-[52px] text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(37,211,102,0.4)] z-40 border-2 border-white"
+        whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} style={{ backgroundColor: WHATSAPP_GREEN }}
+        className="fixed bottom-[90px] md:bottom-8 right-5 lg:right-10 w-[55px] h-[55px] lg:w-[60px] lg:h-[60px] text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(37,211,102,0.4)] z-40 border-2 border-white"
       >
         <WhatsappIcon />
       </motion.a>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 px-6 py-3 z-50 pb-safe">
-        <div className="flex justify-between items-center px-2">
-          <motion.button whileTap={{ scale: 0.85 }} style={{ color: PERSIMMON }} className="flex flex-col items-center gap-1">
+      {/* 🔴 القائمة السفلية: جزيرة عائمة فخمة عاللابتوب */}
+      <div className="fixed bottom-0 left-0 right-0 md:bottom-8 md:left-1/2 md:-translate-x-1/2 md:max-w-lg bg-white border-t md:border border-gray-100 md:rounded-[2rem] md:shadow-[0_20px_50px_rgb(0,0,0,0.1)] px-6 py-3 md:py-4 z-50 pb-safe transition-all">
+        <div className="flex justify-between items-center px-2 lg:px-6">
+          <motion.button whileTap={{ scale: 0.85 }} style={{ color: PERSIMMON }} className="flex flex-col items-center gap-1 md:gap-1.5">
             <HomeIcon />
-            <span className="text-[10px] font-bold mt-0.5">الرئيسية</span>
+            <span className="text-[10px] md:text-xs font-bold mt-0.5">الرئيسية</span>
           </motion.button>
           
-          <motion.button onClick={handleFavoriteClick} whileTap={{ scale: 0.85 }} className="flex flex-col items-center gap-1 text-gray-400">
+          <motion.button onClick={handleFavoriteClick} whileTap={{ scale: 0.85 }} className="flex flex-col items-center gap-1 md:gap-1.5 text-gray-400 hover:text-gray-600 transition">
             <HeartIcon />
-            <span className="text-[10px] font-bold mt-0.5">المفضلة</span>
+            <span className="text-[10px] md:text-xs font-bold mt-0.5">المفضلة</span>
           </motion.button>
           
-          <a href="https://wa.me/963940457043" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#25D366] transition-colors">
+          <a href="https://wa.me/963940457043" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 md:gap-1.5 text-gray-400 hover:text-[#25D366] transition-colors">
             <MessageIcon />
-            <span className="text-[10px] font-bold mt-0.5">الدعم</span>
+            <span className="text-[10px] md:text-xs font-bold mt-0.5">الدعم</span>
           </a>
           
-         <Link href="/owner/login">
-  <motion.button whileTap={{ scale: 0.85 }} className="flex flex-col items-center gap-1 text-gray-400">
-    <UserIcon />
-    <span className="text-[10px] font-bold mt-0.5">تسجيل</span>
-  </motion.button>
-</Link>
+          <Link href="/owner/login">
+            <motion.button whileTap={{ scale: 0.85 }} className="flex flex-col items-center gap-1 md:gap-1.5 text-gray-400 hover:text-blue-600 transition">
+              <UserIcon />
+              <span className="text-[10px] md:text-xs font-bold mt-0.5">تسجيل</span>
+            </motion.button>
+          </Link>
         </div>
       </div>
 
@@ -328,38 +311,33 @@ export default function App() {
         {showLoginHint && (
           <motion.div 
             initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            className="fixed bottom-[90px] left-5 right-5 bg-[#232528] text-white p-4 rounded-2xl shadow-2xl z-50 flex items-center justify-between border border-gray-700"
+            className="fixed bottom-[90px] md:bottom-[100px] left-5 right-5 md:max-w-md md:mx-auto bg-[#232528] text-white p-4 rounded-2xl shadow-2xl z-50 flex items-center justify-between border border-gray-700"
           >
-            <span className="text-sm font-bold">سجل دخول لتحفظ مزارعك المفضلة ❤️</span>
-            <button style={{ color: PERSIMMON }} className="text-sm font-bold px-2 py-1 bg-white/10 rounded-lg">دخول</button>
+            <span className="text-sm lg:text-base font-bold">سجل دخول لتحفظ مزارعك المفضلة ❤️</span>
+            <Link href="/owner/login" style={{ color: PERSIMMON }} className="text-sm font-bold px-3 py-1.5 bg-white/10 hover:bg-white/20 transition rounded-lg">دخول</Link>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Advanced Search Bottom Drawer */}
+      {/* 🔴 مربع البحث المتقدم: نافذة بالوسط عاللابتوب، ومن تحت عالموبايل */}
       <AnimatePresence>
         {isDrawerOpen && (
           <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsDrawerOpen(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"/>
             <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsDrawerOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
-            />
-            <motion.div 
-              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", bounce: 0, duration: 0.5 }}
-              className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white rounded-t-[2rem] z-[70] p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
+              initial={{ y: "100%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: "100%", opacity: 0 }} transition={{ type: "spring", bounce: 0, duration: 0.5 }}
+              className="fixed bottom-0 md:bottom-auto md:top-1/2 md:-translate-y-1/2 left-0 right-0 max-w-md md:max-w-2xl mx-auto bg-white rounded-t-[2rem] md:rounded-[2rem] z-[70] p-6 lg:p-8 shadow-2xl max-h-[85vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6 sticky top-0 bg-white z-10 pb-2">
-                <h3 className="text-xl font-bold text-[#232528]">بحث متقدم</h3>
-                <button onClick={() => setIsDrawerOpen(false)} className="bg-gray-100 p-2 rounded-full text-gray-500"><XIcon /></button>
+                <h3 className="text-xl lg:text-2xl font-black text-[#232528]">بحث متقدم</h3>
+                <button onClick={() => setIsDrawerOpen(false)} className="bg-gray-100 p-2.5 rounded-full text-gray-500 hover:bg-gray-200 transition"><XIcon /></button>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-5 lg:space-y-6">
                 <div>
                   <label className="block text-sm font-bold text-[#232528] mb-2">تاريخ الدخول</label>
                   <input type="date" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} min={new Date().toISOString().split('T')[0]} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:border-[#7CB342] transition font-sans text-gray-700" />
                 </div>
-
                 <div>
                   <label className="block text-sm font-bold text-[#232528] mb-2">المنطقة</label>
                   <select value={filterRegion} onChange={(e) => setFilterRegion(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:border-[#7CB342] transition appearance-none text-gray-700 font-bold">
@@ -372,40 +350,34 @@ export default function App() {
                     <option value="قرى الشام">قرى الشام</option>
                   </select>
                 </div>
-
                 <div>
                   <label className="block text-sm font-bold text-[#232528] mb-2">نوع الحجز</label>
                   <div className="grid grid-cols-2 gap-3">
-                     <button onClick={() => setFilterGuestType(filterGuestType === 'عائلات' ? '' : 'عائلات')} className={`p-3.5 rounded-xl border text-sm font-bold transition-all ${filterGuestType === 'عائلات' ? 'bg-[#7CB342] text-white border-[#7CB342]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>👨‍👩‍👧‍👦 عائلات</button>
-                     <button onClick={() => setFilterGuestType(filterGuestType === 'غروبات' ? '' : 'غروبات')} className={`p-3.5 rounded-xl border text-sm font-bold transition-all ${filterGuestType === 'غروبات' ? 'bg-[#7CB342] text-white border-[#7CB342]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>🎉 غروبات</button>
+                     <button onClick={() => setFilterGuestType(filterGuestType === 'عائلات' ? '' : 'عائلات')} className={`p-4 rounded-xl border text-sm font-bold transition-all ${filterGuestType === 'عائلات' ? 'bg-[#7CB342] text-white border-[#7CB342]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>👨‍👩‍👧‍👦 عائلات</button>
+                     <button onClick={() => setFilterGuestType(filterGuestType === 'غروبات' ? '' : 'غروبات')} className={`p-4 rounded-xl border text-sm font-bold transition-all ${filterGuestType === 'غروبات' ? 'bg-[#7CB342] text-white border-[#7CB342]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>🎉 غروبات</button>
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-sm font-bold text-[#232528] mb-2">عدد الأشخاص</label>
                   <input type="number" placeholder="مثال: 10 (اختياري)" value={filterCapacity} onChange={(e) => setFilterCapacity(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:border-[#7CB342] transition font-sans text-gray-700" />
                 </div>
-
                 <div>
                   <label className="block text-sm font-bold text-[#232528] mb-2">الميزانية (بالليلة)</label>
-                  <div className="flex flex-col gap-2">
-                     <button onClick={() => setFilterPrice(filterPrice === 'under_500' ? '' : 'under_500')} className={`p-4 rounded-xl border text-sm font-bold transition-all text-right ${filterPrice === 'under_500' ? 'bg-[#232528] text-white border-[#232528]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>تحت 500 ألف ل.س</button>
-                     <button onClick={() => setFilterPrice(filterPrice === '500_1500' ? '' : '500_1500')} className={`p-4 rounded-xl border text-sm font-bold transition-all text-right ${filterPrice === '500_1500' ? 'bg-[#232528] text-white border-[#232528]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>بين 500 ألف و 1.5 مليون ل.س</button>
-                     <button onClick={() => setFilterPrice(filterPrice === 'over_1500' ? '' : 'over_1500')} className={`p-4 rounded-xl border text-sm font-bold transition-all text-right ${filterPrice === 'over_1500' ? 'bg-[#232528] text-white border-[#232528]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>فوق 1.5 مليون ل.س</button>
+                  <div className="flex flex-col md:flex-row gap-2">
+                     <button onClick={() => setFilterPrice(filterPrice === 'under_500' ? '' : 'under_500')} className={`w-full p-4 rounded-xl border text-sm font-bold transition-all ${filterPrice === 'under_500' ? 'bg-[#232528] text-white border-[#232528]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>تحت 500 ألف</button>
+                     <button onClick={() => setFilterPrice(filterPrice === '500_1500' ? '' : '500_1500')} className={`w-full p-4 rounded-xl border text-sm font-bold transition-all ${filterPrice === '500_1500' ? 'bg-[#232528] text-white border-[#232528]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>500 إلى 1.5 مليون</button>
+                     <button onClick={() => setFilterPrice(filterPrice === 'over_1500' ? '' : 'over_1500')} className={`w-full p-4 rounded-xl border text-sm font-bold transition-all ${filterPrice === 'over_1500' ? 'bg-[#232528] text-white border-[#232528]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>فوق 1.5 مليون</button>
                   </div>
                 </div>
-
-                <div className="pt-4 pb-2 flex gap-3">
-                   <button onClick={clearFilters} className="w-1/3 h-[60px] bg-gray-100 text-gray-600 rounded-xl font-bold text-sm shadow-sm active:scale-95 transition-transform">مسح الكل</button>
-                   <button onClick={handleSearchSubmit} className="w-2/3 h-[60px] bg-[#FF7E5F] text-white rounded-xl font-bold text-lg shadow-[0_8px_20px_rgba(255,126,95,0.3)] active:scale-95 transition-transform">عرض النتائج</button>
+                <div className="pt-6 pb-2 flex gap-3">
+                   <button onClick={clearFilters} className="w-1/3 h-[60px] bg-gray-100 text-gray-600 rounded-xl font-bold text-sm lg:text-base shadow-sm active:scale-95 hover:bg-gray-200 transition-all">مسح الكل</button>
+                   <button onClick={handleSearchSubmit} className="w-2/3 h-[60px] bg-[#FF7E5F] text-white rounded-xl font-bold text-lg shadow-[0_8px_20px_rgba(255,126,95,0.3)] hover:shadow-[0_12px_25px_rgba(255,126,95,0.4)] active:scale-95 transition-all">عرض النتائج</button>
                 </div>
-
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-
     </div>
   );
 }

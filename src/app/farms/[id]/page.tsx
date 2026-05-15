@@ -46,16 +46,15 @@ export default function FarmDetailsCustomer() {
     if(!farmId) return;
     const fetchDetails = async () => {
       try {
-        // ✅ التعديل الأول: جلب بيانات المزرعة، الروزنامة، والتقييمات بأمان
         const [fData, calData, revData] = await Promise.all([
           api.getFarmDetails(farmId),
           api.getFarmCalendar(farmId),
-          api.getFarmReviewsPublic(farmId).catch(() => []) // .catch() يمنع الشاشة من الانهيار إذا فشل جلب التقييمات
+          api.getFarmReviewsPublic(farmId).catch(() => []) 
         ]);
         
         setFarmData(fData);
         setCalendarDays(calData || []);
-        setReviews(revData || []); // وضع التقييمات في الـ State
+        setReviews(revData || []); 
         
       } catch (err) {
         console.error("Error fetching farm details:", err);
@@ -145,12 +144,11 @@ export default function FarmDetailsCustomer() {
     }
     setIsSubmittingReview(true);
     try {
-      // ✅ التعديل الثاني: تنظيف رقم الفاتورة من الفراغات ورمز الشباك بشكل جذري
       const cleanInvoiceId = reviewForm.invoiceId.replace(/#/g, '').trim();
 
       await api.submitPublicReview({
         farm_id: farmId,
-        invoice_id: cleanInvoiceId, // نرسل الرقم النظيف للباك إند
+        invoice_id: cleanInvoiceId,
         tenant_name: reviewForm.tenantName || 'ضيف',
         stars: reviewForm.stars,
         comment: reviewForm.comment
@@ -172,21 +170,22 @@ export default function FarmDetailsCustomer() {
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
   return (
-    <div dir="rtl" className="max-w-md mx-auto min-h-screen bg-gray-50 relative font-sans overflow-x-hidden pb-32 shadow-2xl border-x border-gray-200">
+    // 🔴 تم إزالة القيود الضيقة ليأخذ العرض الكامل 
+    <div dir="rtl" className="min-h-screen bg-[#F8F9FA] relative font-sans overflow-x-hidden pb-32 md:pb-40">
       
-      {/* 1. سلايدر الصور (مع ميزة التكبير) */}
-      <div className="relative w-full h-[40vh] bg-gray-200 cursor-pointer" onClick={() => setIsFullscreen(true)}>
-        <button onClick={(e) => { e.stopPropagation(); router.back(); }} className="absolute top-6 right-5 z-20 bg-black/30 backdrop-blur-md p-2.5 rounded-full text-white hover:bg-black/50 transition">
+      {/* 1. سلايدر الصور (متجاوب مع الشاشات الكبيرة) */}
+      <div className="relative w-full h-[40vh] md:h-[50vh] lg:h-[65vh] bg-gray-200 cursor-pointer lg:max-w-7xl lg:mx-auto lg:mt-6 lg:rounded-3xl overflow-hidden shadow-sm" onClick={() => setIsFullscreen(true)}>
+        <button onClick={(e) => { e.stopPropagation(); router.back(); }} className="absolute top-6 right-5 md:top-8 md:right-8 z-20 bg-black/30 backdrop-blur-md p-2.5 rounded-full text-white hover:bg-black/50 transition">
           <BackIcon />
         </button>
 
         {farmData.classification && (
-          <div className="absolute top-6 left-5 z-20 bg-white/95 backdrop-blur-sm text-purple-700 px-4 py-1.5 rounded-full text-xs font-black shadow-lg">
+          <div className="absolute top-6 left-5 md:top-8 md:left-8 z-20 bg-white/95 backdrop-blur-sm text-purple-700 px-4 py-1.5 rounded-full text-xs md:text-sm font-black shadow-lg">
             {farmData.classification}
           </div>
         )}
 
-        <div className="absolute bottom-6 right-5 z-20 bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
+        <div className="absolute bottom-6 right-5 md:bottom-8 md:right-8 z-20 bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs md:text-sm font-bold flex items-center gap-1.5">
           <ZoomIcon /> تكبير الصور
         </div>
 
@@ -199,11 +198,11 @@ export default function FarmDetailsCustomer() {
 
         {images.length > 1 && (
           <>
-            <button onClick={nextImg} className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-2 rounded-full text-white z-10"><ChevronLeft /></button>
-            <button onClick={prevImg} className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-2 rounded-full text-white z-10"><ChevronRight /></button>
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            <button onClick={nextImg} className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-2 md:p-3 rounded-full text-white z-10 hover:bg-black/40 transition"><ChevronLeft /></button>
+            <button onClick={prevImg} className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-2 md:p-3 rounded-full text-white z-10 hover:bg-black/40 transition"><ChevronRight /></button>
+            <div className="absolute bottom-10 md:bottom-12 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2 z-10">
               {images.map((_: any, idx: number) => (
-                <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === imgIndex ? 'w-5 bg-white' : 'w-2 bg-white/50'}`} />
+                <div key={idx} className={`h-1.5 md:h-2 rounded-full transition-all ${idx === imgIndex ? 'w-5 md:w-8 bg-white' : 'w-2 md:w-3 bg-white/50'}`} />
               ))}
             </div>
           </>
@@ -211,333 +210,274 @@ export default function FarmDetailsCustomer() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
       </div>
 
-      {/* 2. قسم المعلومات */}
-      <div className="bg-white rounded-t-3xl -mt-6 relative z-20 p-6 shadow-sm">
+      {/* 2. قسم المعلومات (كارد يطفو فوق الصورة عاللابتوب) */}
+      <div className="bg-white rounded-t-3xl lg:rounded-3xl -mt-6 lg:-mt-16 relative z-20 p-6 md:p-8 lg:p-10 shadow-sm lg:shadow-xl lg:max-w-5xl lg:mx-auto md:mx-6 mx-0">
         
         {/* الاسم والكود والمنطقة */}
-        <div className="mb-4">
-           <div className="flex justify-between items-start mb-1">
-              <h1 className="text-2xl font-black text-gray-800 leading-tight">{farmData.name}</h1>
-              <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">{farmData.admin_code}</span>
+        <div className="mb-6 lg:mb-8">
+           <div className="flex justify-between items-start mb-2">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-800 leading-tight">{farmData.name}</h1>
+              <span className="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-md text-[10px] md:text-xs font-bold uppercase tracking-wider">{farmData.admin_code}</span>
            </div>
-           <p className="text-sm font-bold text-gray-500 flex items-center gap-1.5">
+           <p className="text-sm md:text-base font-bold text-gray-500 flex items-center gap-1.5">
              <MapIcon /> {farmData.region}
            </p>
         </div>
 
         {/* الأسعار في الوجه */}
-        <div className="flex gap-3 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-6 mb-6 md:mb-8 bg-gray-50 p-4 md:p-6 rounded-2xl border border-gray-100">
            <div className="flex-1">
-              <div className="text-[10px] font-bold text-gray-500 mb-1">السعر (أيام عادية)</div>
-              <div className="text-lg font-black text-green-600">{farmData.price_weekday?.toLocaleString()} <span className="text-[10px]">ل.س</span></div>
+              <div className="text-[10px] md:text-xs font-bold text-gray-500 mb-1">السعر (أيام عادية)</div>
+              <div className="text-lg md:text-2xl font-black text-green-600">{farmData.price_weekday?.toLocaleString()} <span className="text-[10px] md:text-sm">ل.س</span></div>
            </div>
-           <div className="w-px bg-gray-200"></div>
+           <div className="w-full md:w-px h-px md:h-auto bg-gray-200"></div>
            <div className="flex-1">
-              <div className="text-[10px] font-bold text-gray-500 mb-1">السعر (عطل وأعياد)</div>
-              <div className="text-lg font-black text-purple-600">{farmData.price_weekend?.toLocaleString()} <span className="text-[10px]">ل.س</span></div>
+              <div className="text-[10px] md:text-xs font-bold text-gray-500 mb-1">السعر (عطل وأعياد)</div>
+              <div className="text-lg md:text-2xl font-black text-purple-600">{farmData.price_weekend?.toLocaleString()} <span className="text-[10px] md:text-sm">ل.س</span></div>
            </div>
         </div>
 
-        {/* شبكة المواصفات */}
-        <div className="grid grid-cols-2 gap-3 mb-8">
-           <div className="bg-white rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100 shadow-sm">
+        {/* شبكة المواصفات 🔴 تتمدد لتصبح 4 أعمدة على الشاشات المتوسطة والكبيرة */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8">
+           <div className="bg-white rounded-xl p-3 md:p-5 flex flex-col items-center justify-center text-center border border-gray-100 shadow-sm">
              <BedIcon />
-             <span className="text-xs font-bold text-gray-700 mt-2">{farmData.rooms_count} غرف نوم</span>
+             <span className="text-xs md:text-sm font-bold text-gray-700 mt-2">{farmData.rooms_count} غرف نوم</span>
            </div>
-           <div className="bg-white rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100 shadow-sm">
+           <div className="bg-white rounded-xl p-3 md:p-5 flex flex-col items-center justify-center text-center border border-gray-100 shadow-sm">
              <AreaIcon />
-             <span className="text-xs font-bold text-gray-700 mt-2">{farmData.area_size} متر مربع</span>
+             <span className="text-xs md:text-sm font-bold text-gray-700 mt-2">{farmData.area_size} متر مربع</span>
            </div>
-           <div className="bg-white rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100 shadow-sm">
+           <div className="bg-white rounded-xl p-3 md:p-5 flex flex-col items-center justify-center text-center border border-gray-100 shadow-sm">
              <UsersIcon />
-             <span className="text-xs font-bold text-gray-700 mt-2">تتسع {farmData.max_capacity} شخص</span>
+             <span className="text-xs md:text-sm font-bold text-gray-700 mt-2">تتسع {farmData.max_capacity} شخص</span>
            </div>
-           <div className="bg-blue-50 rounded-xl p-3 flex flex-col items-center justify-center text-center border border-blue-100">
-             <span className="text-lg mb-1">👨‍👩‍👧‍👦</span>
-             <span className="text-[10px] font-black text-blue-700 leading-tight">
+           <div className="bg-blue-50 rounded-xl p-3 md:p-5 flex flex-col items-center justify-center text-center border border-blue-100">
+             <span className="text-lg md:text-2xl mb-1">👨‍👩‍👧‍👦</span>
+             <span className="text-[10px] md:text-xs font-black text-blue-700 leading-tight">
                {farmData.guest_type === 'families' ? 'عائلات فقط' : 'عائلات وكروبات'}
              </span>
            </div>
         </div>
 
-        {/* الوصف التفصيلي */}
-        <div className="mb-8">
-           <h3 className="text-lg font-black text-gray-800 mb-3">التفاصيل والمرافق</h3>
-           <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap font-medium bg-gray-50 p-4 rounded-2xl border border-gray-100">
-             {farmData.description}
-           </p>
-        </div>
+        {/* الوصف التفصيلي والخريطة (جنب بعض عالشاشات الكبيرة) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-4">
+          <div>
+             <h3 className="text-lg md:text-xl font-black text-gray-800 mb-3">التفاصيل والمرافق</h3>
+             <p className="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-wrap font-medium bg-gray-50 p-5 rounded-2xl border border-gray-100 h-full">
+               {farmData.description}
+             </p>
+          </div>
 
-        {/* ✅ الخريطة التفاعلية */}
-        <div className="mb-2">
-           <h3 className="text-lg font-black text-gray-800 mb-3">الموقع على الخريطة</h3>
-           <div className="w-full h-56 rounded-2xl overflow-hidden shadow-sm border border-gray-200 mb-3 relative">
-             <iframe
-               width="100%"
-               height="100%"
-               frameBorder={0}
-               style={{ border: 0 }}
-               src={`https://maps.google.com/maps?q=${encodeURIComponent(farmData.name + ' ' + farmData.region)}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-               allowFullScreen
-             ></iframe>
-           </div>
-           {farmData.google_maps_url && (
-             <a href={farmData.google_maps_url} target="_blank" rel="noreferrer" className="w-full py-3.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition">
-               <MapIcon /> فتح في تطبيق الخرائط الرسمي
-             </a>
-           )}
+          <div>
+             <h3 className="text-lg md:text-xl font-black text-gray-800 mb-3">الموقع على الخريطة</h3>
+             <div className="w-full h-56 md:h-64 rounded-2xl overflow-hidden shadow-sm border border-gray-200 mb-3 relative">
+               <iframe width="100%" height="100%" frameBorder={0} style={{ border: 0 }} src={`https://maps.google.com/maps?q=${encodeURIComponent(farmData.name + ' ' + farmData.region)}&t=&z=13&ie=UTF8&iwloc=&output=embed`} allowFullScreen></iframe>
+             </div>
+             {farmData.google_maps_url && (
+               <a href={farmData.google_maps_url} target="_blank" rel="noreferrer" className="w-full py-3.5 md:py-4 bg-gray-100 text-gray-700 rounded-xl text-sm md:text-base font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition">
+                 <MapIcon /> فتح في تطبيق الخرائط الرسمي
+               </a>
+             )}
+          </div>
         </div>
       </div>
 
-      {/* 3. الروزنامة التفاعلية */}
-      <div className="p-6 pt-0">
-        <h3 className="text-lg font-black text-gray-800 mb-4">اختر يوماً للحجز 👇</h3>
-        <div className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-          <div className="flex justify-between items-center mb-5">
-            <button onClick={prevMonth} className="p-2 bg-gray-50 rounded-full text-gray-600 active:scale-95"><ChevronRight /></button>
-            <h2 className="text-sm font-black text-[#232528]">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
-            <button onClick={nextMonth} className="p-2 bg-gray-50 rounded-full text-gray-600 active:scale-95"><ChevronLeft /></button>
+      {/* 🔴 الأقسام السفلية: عاللابتوب بتصير مقسومة نصين (التقويم يمين، التقييمات يسار) */}
+      <div className="lg:max-w-5xl lg:mx-auto md:mx-6 mx-0 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mt-6 md:mt-8 px-6 md:px-0">
+        
+        {/* العمود الأيمن: الروزنامة التفاعلية */}
+        <div>
+          <h3 className="text-lg md:text-xl font-black text-gray-800 mb-4">اختر يوماً للحجز 👇</h3>
+          <div className="bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center mb-5">
+              <button onClick={prevMonth} className="p-2 md:p-3 bg-gray-50 rounded-full text-gray-600 active:scale-95 hover:bg-gray-100"><ChevronRight /></button>
+              <h2 className="text-sm md:text-base font-black text-[#232528]">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
+              <button onClick={nextMonth} className="p-2 md:p-3 bg-gray-50 rounded-full text-gray-600 active:scale-95 hover:bg-gray-100"><ChevronLeft /></button>
+            </div>
+
+            <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2 text-center">
+              {['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'].map(day => (
+                <div key={day} className="text-[10px] md:text-xs font-bold text-gray-400 py-1">{day}</div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-1.5 md:gap-2 relative">
+              {allCells.map((date, index) => {
+                if (!date) return <div key={`blank-${index}`} className="h-10 md:h-12"></div>;
+                
+                const status = getDayStatus(date);
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const isPast = date < today;
+                const isSelected = selectedDateForBooking?.toDateString() === date.toDateString();
+                
+                let bgColor = "bg-gray-50 hover:bg-gray-100"; 
+                let textColor = "text-gray-800"; 
+                let border = "border border-gray-100";
+                let cursor = "cursor-pointer active:scale-90 transition-transform";
+
+                if (isPast) {
+                  bgColor = "bg-transparent"; textColor = "text-gray-300"; border = "border-transparent"; cursor = "cursor-default";
+                } else if (status === 'booked' || status === 'hold' || status === 'pending_hold') {
+                  bgColor = "bg-red-50 opacity-50"; textColor = "text-red-400 line-through"; border = "border border-red-100"; cursor = "cursor-not-allowed";
+                } else if (status === 'holiday') {
+                  bgColor = "bg-purple-50 hover:bg-purple-100"; textColor = "text-purple-700"; border = "border border-purple-200";
+                }
+
+                if (isSelected) {
+                  bgColor = "bg-blue-600";
+                  textColor = "text-white";
+                  border = "border-blue-700 shadow-md scale-105 z-10";
+                }
+
+                return (
+                  <button
+                    key={date.toISOString()}
+                    onClick={() => !isPast && handleDayClick(date, status)}
+                    className={`h-11 md:h-12 rounded-xl flex items-center justify-center font-bold text-sm md:text-base ${bgColor} ${textColor} ${border} ${cursor}`}
+                  >
+                    {date.getDate()}
+                  </button>
+                );
+              })}
+            </div>
+            
+            <div className="mt-5 md:mt-6 pt-4 border-t border-gray-100 flex justify-between px-2">
+               <div className="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-gray-600"><span className="w-2.5 h-2.5 rounded-sm bg-gray-100 border border-gray-200"></span> متاح</div>
+               <div className="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-purple-700"><span className="w-2.5 h-2.5 rounded-sm bg-purple-100 border border-purple-200"></span> عطلة</div>
+               <div className="flex items-center gap-1.5 text-[10px] md:text-xs font-bold text-red-400"><span className="w-2.5 h-2.5 rounded-sm bg-red-50 border border-red-100"></span> محجوز</div>
+            </div>
           </div>
+        </div>
 
-          <div className="grid grid-cols-7 gap-1 mb-2 text-center">
-            {['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'].map(day => (
-              <div key={day} className="text-[10px] font-bold text-gray-400 py-1">{day}</div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-7 gap-1.5 relative">
-            {allCells.map((date, index) => {
-              if (!date) return <div key={`blank-${index}`} className="h-10"></div>;
-              
-              const status = getDayStatus(date);
-              const today = new Date();
-              today.setHours(0,0,0,0);
-              const isPast = date < today;
-              const isSelected = selectedDateForBooking?.toDateString() === date.toDateString();
-              
-              let bgColor = "bg-gray-50 hover:bg-gray-100"; 
-              let textColor = "text-gray-800"; 
-              let border = "border border-gray-100";
-              let cursor = "cursor-pointer active:scale-90";
-
-              if (isPast) {
-                bgColor = "bg-transparent"; textColor = "text-gray-300"; border = "border-transparent"; cursor = "cursor-default";
-              } else if (status === 'booked' || status === 'hold' || status === 'pending_hold') {
-                bgColor = "bg-red-50 opacity-50"; textColor = "text-red-400 line-through"; border = "border border-red-100"; cursor = "cursor-not-allowed";
-              } else if (status === 'holiday') {
-                bgColor = "bg-purple-50 hover:bg-purple-100"; textColor = "text-purple-700"; border = "border border-purple-200";
-              }
-
-              if (isSelected) {
-                bgColor = "bg-blue-600";
-                textColor = "text-white";
-                border = "border-blue-700 shadow-md scale-105 z-10";
-              }
-
-              return (
-                <button
-                  key={date.toISOString()}
-                  onClick={() => !isPast && handleDayClick(date, status)}
-                  className={`h-11 rounded-xl flex items-center justify-center font-bold text-sm transition-all ${bgColor} ${textColor} ${border} ${cursor}`}
-                >
-                  {date.getDate()}
-                </button>
-              );
-            })}
-          </div>
+        {/* العمود الأيسر: التقييمات وإضافة تقييم */}
+        <div className="space-y-6 md:space-y-8">
           
-          <div className="mt-5 pt-4 border-t border-gray-100 flex justify-between px-2">
-             <div className="flex items-center gap-1 text-[10px] font-bold text-gray-600"><span className="w-2.5 h-2.5 rounded-sm bg-gray-100 border border-gray-200"></span> متاح</div>
-             <div className="flex items-center gap-1 text-[10px] font-bold text-purple-700"><span className="w-2.5 h-2.5 rounded-sm bg-purple-100 border border-purple-200"></span> عطلة</div>
-             <div className="flex items-center gap-1 text-[10px] font-bold text-red-400"><span className="w-2.5 h-2.5 rounded-sm bg-red-50 border border-red-100"></span> محجوز</div>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. قسم التقييمات */}
-      <div className="p-6 pt-0 mb-4">
-         <h3 className="text-lg font-black text-gray-800 mb-4">آراء الزوار</h3>
-         {reviews.length === 0 ? (
-           <div className="bg-white p-6 rounded-2xl text-center border border-gray-100 shadow-sm">
-             <div className="text-3xl mb-2 opacity-50">⭐</div>
-             <div className="text-sm font-bold text-gray-500">لا يوجد تقييمات حالياً.</div>
-             <p className="text-[10px] text-gray-400 mt-1">كن أول من يشاركنا تجربته بعد الحجز!</p>
-           </div>
-         ) : (
-           <div className="space-y-3">
-             {reviews.map((rev: any, i: number) => (
-               <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                 <div className="flex justify-between items-center mb-2">
-                   <span className="font-bold text-sm text-gray-800">{rev.tenant_name || rev.tenantName}</span>
-                   <div className="flex gap-0.5">{[...Array(5)].map((_, idx) => <StarIcon key={idx} solid={idx < rev.stars} />)}</div>
-                 </div>
-                 <p className="text-xs text-gray-600 leading-relaxed">{rev.comment}</p>
+          {/* قسم التقييمات */}
+          <div>
+             <h3 className="text-lg md:text-xl font-black text-gray-800 mb-4">آراء الزوار</h3>
+             {reviews.length === 0 ? (
+               <div className="bg-white p-6 md:p-8 rounded-2xl text-center border border-gray-100 shadow-sm">
+                 <div className="text-3xl md:text-4xl mb-3 opacity-50">⭐</div>
+                 <div className="text-sm md:text-base font-bold text-gray-500">لا يوجد تقييمات حالياً.</div>
+                 <p className="text-[10px] md:text-xs text-gray-400 mt-2">كن أول من يشاركنا تجربته بعد الحجز!</p>
                </div>
-             ))}
-           </div>
-         )}
-      </div>
+             ) : (
+               <div className="space-y-3 md:space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                 {reviews.map((rev: any, i: number) => (
+                   <div key={i} className="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100">
+                     <div className="flex justify-between items-center mb-2">
+                       <span className="font-bold text-sm md:text-base text-gray-800">{rev.tenant_name || rev.tenantName}</span>
+                       <div className="flex gap-0.5">{[...Array(5)].map((_, idx) => <StarIcon key={idx} solid={idx < rev.stars} />)}</div>
+                     </div>
+                     <p className="text-xs md:text-sm text-gray-600 leading-relaxed">{rev.comment}</p>
+                   </div>
+                 ))}
+               </div>
+             )}
+          </div>
 
-      {/* 5. قسم إضافة تقييم جديد */}
-      <div className="p-6 pt-0 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
-           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB342] to-[#2AABEE]"></div>
-           <h4 className="text-base font-black text-gray-800 mb-4 flex items-center gap-2">
-             <span className="text-xl">✍️</span> أضف تقييمك للمزرعة
-           </h4>
-           <form onSubmit={handleReviewSubmit} className="space-y-4">
-             <div>
-               <label className="text-xs font-bold text-gray-600 mb-1.5 block">الاسم (اختياري)</label>
-               <input 
-                 type="text" 
-                 value={reviewForm.tenantName} 
-                 onChange={e => setReviewForm({...reviewForm, tenantName: e.target.value})} 
-                 className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm focus:border-[#7CB342] outline-none transition" 
-                 placeholder="اسمك الكريم" 
-               />
-             </div>
-             
-             <div>
-               <label className="text-xs font-bold text-gray-600 mb-1.5 block">رقم الفاتورة (مطلوب للتحقق)</label>
-               <input 
-                 type="text" 
-                 required 
-                 value={reviewForm.invoiceId} 
-                 onChange={e => setReviewForm({...reviewForm, invoiceId: e.target.value})} 
-                 className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm font-bold text-gray-800 focus:border-[#7CB342] outline-none transition" 
-                 placeholder="مثال: EV-20260412-0001" 
-                 dir="ltr" 
-               />
-             </div>
+          {/* قسم إضافة تقييم جديد */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB342] to-[#2AABEE]"></div>
+             <h4 className="text-base md:text-lg font-black text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
+               <span className="text-xl md:text-2xl">✍️</span> أضف تقييمك للمزرعة
+             </h4>
+             <form onSubmit={handleReviewSubmit} className="space-y-4 md:space-y-5">
+               <div>
+                 <label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 md:mb-2 block">الاسم (اختياري)</label>
+                 <input type="text" value={reviewForm.tenantName} onChange={e => setReviewForm({...reviewForm, tenantName: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm focus:border-[#7CB342] outline-none transition" placeholder="اسمك الكريم" />
+               </div>
+               <div>
+                 <label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 md:mb-2 block">رقم الفاتورة (مطلوب للتحقق)</label>
+                 <input type="text" required value={reviewForm.invoiceId} onChange={e => setReviewForm({...reviewForm, invoiceId: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm font-bold text-gray-800 focus:border-[#7CB342] outline-none transition" placeholder="مثال: EV-20260412-0001" dir="ltr" />
+               </div>
+               <div>
+                  <label className="text-xs md:text-sm font-bold text-gray-600 mb-2 block">كم نجمة تستحق المزرعة؟</label>
+                  <div className="flex gap-2 justify-end bg-gray-50 p-3 md:p-4 rounded-xl border border-gray-100" dir="ltr">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <button type="button" key={star} onClick={() => setReviewForm({...reviewForm, stars: star})} className="focus:outline-none hover:scale-110 transition-transform active:scale-90">
+                        <StarIcon solid={star <= reviewForm.stars} />
+                      </button>
+                    ))}
+                  </div>
+               </div>
+               <div>
+                 <label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 md:mb-2 block">رأيك بالمزرعة</label>
+                 <textarea required value={reviewForm.comment} onChange={e => setReviewForm({...reviewForm, comment: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm md:text-base h-24 md:h-32 focus:border-[#7CB342] outline-none transition resize-none leading-relaxed" placeholder="كيف كانت تجربتك؟ نرجو كتابة رأيك بصراحة..."></textarea>
+               </div>
+               <button type="submit" disabled={isSubmittingReview} className="w-full py-4 md:py-5 mt-2 bg-[#232528] text-white rounded-xl font-black text-sm md:text-base hover:bg-black transition active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2">
+                 {isSubmittingReview ? 'جاري الإرسال...' : 'نشر التقييم'}
+               </button>
+             </form>
+          </div>
 
-             <div>
-                <label className="text-xs font-bold text-gray-600 mb-2 block">كم نجمة تستحق المزرعة؟</label>
-                <div className="flex gap-2 justify-end bg-gray-50 p-3 rounded-xl border border-gray-100" dir="ltr">
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <button 
-                      type="button" 
-                      key={star} 
-                      onClick={() => setReviewForm({...reviewForm, stars: star})} 
-                      className="focus:outline-none hover:scale-110 transition-transform active:scale-90"
-                    >
-                      <StarIcon solid={star <= reviewForm.stars} />
-                    </button>
-                  ))}
-                </div>
-             </div>
-
-             <div>
-               <label className="text-xs font-bold text-gray-600 mb-1.5 block">رأيك بالمزرعة</label>
-               <textarea 
-                 required 
-                 value={reviewForm.comment} 
-                 onChange={e => setReviewForm({...reviewForm, comment: e.target.value})} 
-                 className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm h-24 focus:border-[#7CB342] outline-none transition resize-none leading-relaxed" 
-                 placeholder="كيف كانت تجربتك؟ نرجو كتابة رأيك بصراحة..."
-               ></textarea>
-             </div>
-             
-             <button 
-               type="submit" 
-               disabled={isSubmittingReview} 
-               className="w-full py-4 mt-2 bg-[#232528] text-white rounded-xl font-black text-sm hover:bg-black transition active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-             >
-               {isSubmittingReview ? 'جاري الإرسال...' : 'نشر التقييم'}
-             </button>
-           </form>
         </div>
       </div>
 
-      {/* 6. فقاعة التلغرام (تفاصيل أكثر / SOS) */}
+      {/* 6. فقاعة التلغرام */}
       {farmData.telegram_video_url && (
-        <a href={farmData.telegram_video_url} target="_blank" rel="noreferrer" className="fixed bottom-[90px] right-5 z-40 bg-[#2AABEE] text-white px-4 py-3 rounded-full font-bold text-sm shadow-[0_8px_20px_rgba(42,171,238,0.4)] flex items-center gap-2 hover:scale-105 transition-transform border-2 border-white">
+        <a href={farmData.telegram_video_url} target="_blank" rel="noreferrer" className="fixed bottom-[90px] md:bottom-28 right-5 lg:right-10 z-40 bg-[#2AABEE] text-white px-4 py-3 md:px-5 md:py-4 rounded-full font-bold text-sm md:text-base shadow-[0_8px_20px_rgba(42,171,238,0.4)] flex items-center gap-2 hover:scale-105 transition-transform border-2 border-white">
           <TelegramIcon /> فيديو وتفاصيل أكثر
         </a>
       )}
 
-      {/* 7. شريط الحجز السفلي الثابت */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 px-6 py-4 z-50 flex items-center justify-between pb-safe shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-        
+      {/* 7. 🔴 شريط الحجز السفلي: عاللابتوب بصير بنص الشاشة كـ (Floating Dock) فخم */}
+      <div className="fixed bottom-0 left-0 right-0 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:max-w-2xl bg-white border-t md:border border-gray-100 px-6 py-4 md:py-5 z-50 flex items-center justify-between pb-safe md:rounded-3xl shadow-[0_-10px_30px_rgba(0,0,0,0.05)] md:shadow-[0_20px_50px_rgb(0,0,0,0.15)] transition-all">
         {selectedDateForBooking ? (
           <>
             <div>
-              <div className="text-[10px] text-gray-500 font-bold mb-0.5">
+              <div className="text-[10px] md:text-xs text-gray-500 font-bold mb-0.5 md:mb-1">
                 حجز يوم {selectedDateForBooking.toLocaleDateString('ar-SY')}
               </div>
-              <div className="text-xl font-black text-green-600 leading-none">
-                {calculatedPrice?.toLocaleString()} <span className="text-[10px] text-gray-400">ل.س</span>
+              <div className="text-xl md:text-2xl font-black text-green-600 leading-none">
+                {calculatedPrice?.toLocaleString()} <span className="text-[10px] md:text-sm text-gray-400">ل.س</span>
               </div>
             </div>
-            <button 
-              onClick={handleBookNow}
-              className="px-8 py-3.5 rounded-xl font-black text-white bg-[#7CB342] hover:bg-[#689f38] transition-all shadow-lg active:scale-95"
-            >
+            <button onClick={handleBookNow} className="px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-black text-white bg-[#7CB342] hover:bg-[#689f38] transition-all shadow-lg active:scale-95 text-sm md:text-base">
               احجز الآن
             </button>
           </>
         ) : (
           <>
             <div>
-              <div className="text-[10px] text-gray-500 font-bold mb-0.5">الأسعار تبدأ من</div>
-              <div className="text-lg font-black text-gray-800 leading-none">
-                {farmData.price_weekday?.toLocaleString()} <span className="text-[10px] text-gray-400">ل.س</span>
+              <div className="text-[10px] md:text-xs text-gray-500 font-bold mb-0.5 md:mb-1">الأسعار تبدأ من</div>
+              <div className="text-lg md:text-2xl font-black text-gray-800 leading-none">
+                {farmData.price_weekday?.toLocaleString()} <span className="text-[10px] md:text-sm text-gray-400">ل.س</span>
               </div>
             </div>
-            <div className="px-6 py-3.5 rounded-xl font-bold text-gray-400 bg-gray-100 text-sm">
+            <div className="px-6 md:px-10 py-3.5 md:py-4 rounded-xl font-bold text-gray-400 bg-gray-100 text-sm md:text-base">
               اختر يوماً للحجز
             </div>
           </>
         )}
       </div>
 
-      {/* 8. 🔴 شاشة تكبير الصور (Fullscreen Modal) 🔴 */}
+      {/* 8. شاشة تكبير الصور (Fullscreen Modal) */}
       <AnimatePresence>
         {isFullscreen && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black flex flex-col"
-          >
-            {/* الهيدر وزر الإغلاق */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black flex flex-col">
             <div className="flex justify-between items-center p-5 z-20">
-              <span className="text-white/70 font-bold text-sm">{imgIndex + 1} / {images.length}</span>
-              <button onClick={() => setIsFullscreen(false)} className="text-white p-2 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition">
+              <span className="text-white/70 font-bold text-sm md:text-base">{imgIndex + 1} / {images.length}</span>
+              <button onClick={() => setIsFullscreen(false)} className="text-white p-2 md:p-3 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition">
                 <CloseIconX />
               </button>
             </div>
-
-            {/* الصورة في المنتصف */}
             <div className="flex-1 relative flex items-center justify-center overflow-hidden">
                {images.length > 1 && (
-                 <button onClick={prevImg} className="absolute left-4 text-white p-3 bg-black/50 rounded-full z-20 hover:bg-black/80 active:scale-95"><ChevronLeft/></button>
+                 <button onClick={prevImg} className="absolute left-4 md:left-8 text-white p-3 md:p-4 bg-black/50 rounded-full z-20 hover:bg-black/80 active:scale-95"><ChevronLeft/></button>
                )}
-               
                <AnimatePresence mode="wait">
-                 <motion.img
-                    key={imgIndex}
-                    src={images[imgIndex]}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="max-w-full max-h-full object-contain"
-                 />
+                 <motion.img key={imgIndex} src={images[imgIndex]} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.2 }} className="max-w-full max-h-full object-contain" />
                </AnimatePresence>
-
                {images.length > 1 && (
-                 <button onClick={nextImg} className="absolute right-4 text-white p-3 bg-black/50 rounded-full z-20 hover:bg-black/80 active:scale-95"><ChevronRight/></button>
+                 <button onClick={nextImg} className="absolute right-4 md:right-8 text-white p-3 md:p-4 bg-black/50 rounded-full z-20 hover:bg-black/80 active:scale-95"><ChevronRight/></button>
                )}
             </div>
-
-            {/* شريط الصور المصغرة في الأسفل */}
             {images.length > 1 && (
               <div className="p-5 flex gap-3 overflow-x-auto justify-center hide-scrollbar">
                  {images.map((img: string, idx: number) => (
-                    <img 
-                      key={idx} 
-                      src={img} 
-                      onClick={() => setImgIndex(idx)} 
-                      className={`w-16 h-16 object-cover rounded-xl cursor-pointer transition-all duration-300 ${idx === imgIndex ? 'border-2 border-[#7CB342] scale-110 opacity-100' : 'border border-white/20 opacity-50 hover:opacity-80'}`} 
-                    />
+                    <img key={idx} src={img} onClick={() => setImgIndex(idx)} className={`w-16 h-16 md:w-20 md:h-20 object-cover rounded-xl cursor-pointer transition-all duration-300 ${idx === imgIndex ? 'border-2 border-[#7CB342] scale-110 opacity-100' : 'border border-white/20 opacity-50 hover:opacity-80'}`} />
                  ))}
               </div>
             )}

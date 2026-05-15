@@ -28,11 +28,9 @@ export default function RootLayout({
 }) {
   return (
    <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body className={`${ibmPlexSansArabic.variable} ${notoKufiArabic.variable} font-sans bg-gray-100 text-[#232528] antialiased`}>
-        {/* حاوية الموبايل: عرض أقصى 448 بكسل، متمركزة في المنتصف مع ظل */}
-        <main className="max-w-md mx-auto min-h-screen bg-white shadow-2xl relative overflow-x-hidden">
+      {/* 🔴 تم الحفاظ على الخطوط، وتم إزالة max-w-md ليأخذ الموقع العرض الكامل بسلاسة */}
+      <body className={`${ibmPlexSansArabic.variable} ${notoKufiArabic.variable} font-sans bg-[#F8F9FA] text-[#232528] antialiased min-h-screen relative overflow-x-hidden`}>
           {children}
-        </main>
       </body>
     </html>
   );

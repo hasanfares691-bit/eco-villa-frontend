@@ -73,67 +73,69 @@ export default function OwnerDashboard() {
   }
 
   return (
-    <div dir="rtl" className="max-w-md mx-auto min-h-screen bg-[#F8F9FA] relative font-sans overflow-x-hidden selection:bg-[#7CB342]/30 pb-20">
+    // 🔴 إزالة القيود الصارمة للموبايل وجعلها تتمدد
+    <div dir="rtl" className="w-full min-h-screen bg-[#F8F9FA] relative font-sans overflow-x-hidden selection:bg-[#7CB342]/30 pb-20">
       
       {/* Header */}
-      <header className="pt-12 pb-6 px-6 bg-[#232528] text-white rounded-b-[2.5rem] shadow-xl relative z-10">
-        <div className="flex justify-between items-center">
+      <header className="pt-12 pb-6 px-6 md:px-12 md:pt-16 md:pb-10 bg-[#232528] text-white rounded-b-[2.5rem] md:rounded-b-[4rem] shadow-xl relative z-10">
+        <div className="max-w-5xl mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-black tracking-tight mb-1">أهلاً بك 👋</h1>
-            <p className="text-gray-400 text-sm font-medium">لوحة تحكم المالك</p>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-1 md:mb-2">أهلاً بك 👋</h1>
+            <p className="text-gray-400 text-sm md:text-base font-medium">لوحة تحكم المالك</p>
           </div>
           
           <button 
             onClick={handleLogout}
-            className="w-12 h-12 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-colors"
+            className="w-12 h-12 md:w-14 md:h-14 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-colors shadow-sm"
             title="تسجيل الخروج"
           >
             <LogoutIcon />
           </button>
         </div>
-
-        {/* تم إخفاء كروت الإحصائيات (العربون المقبوض وغير المقبوض) مؤقتاً */}
       </header>
 
       {/* Main Content */}
-      <main className="px-5 pt-8">
-        <div className="flex justify-between items-end mb-5">
-           <h2 className="text-lg font-black text-[#232528]">مزارعك الحالية</h2>
-           <span className="text-xs font-bold text-[#0288D1] bg-blue-50 px-3 py-1 rounded-full">نشطة</span>
+      <main className="px-5 pt-8 md:px-8 md:pt-12 max-w-5xl mx-auto">
+        <div className="flex justify-between items-end mb-5 md:mb-8">
+           <h2 className="text-lg md:text-2xl font-black text-[#232528]">مزارعك الحالية</h2>
+           <span className="text-xs md:text-sm font-bold text-[#0288D1] bg-blue-50 px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-blue-100">نشطة</span>
         </div>
 
         {farmData ? (
           <motion.div 
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden relative mb-8 border border-gray-100"
+            // 🔴 الكرت يصبح بالعرض (أفقي) على الشاشات الكبيرة
+            className="bg-white rounded-[2rem] lg:rounded-[3rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.1)] transition-all overflow-hidden relative mb-8 border border-gray-100 flex flex-col md:flex-row"
           >
-            <div className="relative w-full aspect-video bg-gray-200 group">
+            {/* قسم الصورة */}
+            <div className="relative w-full md:w-1/2 lg:w-[55%] aspect-video md:aspect-auto md:min-h-[350px] bg-gray-200 group shrink-0">
               <AnimatePresence initial={false} mode="wait">
                 <motion.img 
                   key={imgIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
-                  src={farmData.images[imgIndex]} alt={farmData.title} className="absolute inset-0 w-full h-full object-cover" 
+                  src={farmData.images[imgIndex]} alt={farmData.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                 />
               </AnimatePresence>
 
               {farmData.images.length > 1 && (
                 <>
-                  <button onClick={nextImg} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-1.5 rounded-full text-white hover:bg-black/40 transition z-10 shadow-sm"><ChevronLeft /></button>
-                  <button onClick={prevImg} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-1.5 rounded-full text-white hover:bg-black/40 transition z-10 shadow-sm"><ChevronRight /></button>
+                  <button onClick={nextImg} className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-1.5 md:p-2.5 rounded-full text-white hover:bg-black/40 transition z-10 shadow-sm"><ChevronLeft /></button>
+                  <button onClick={prevImg} className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-1.5 md:p-2.5 rounded-full text-white hover:bg-black/40 transition z-10 shadow-sm"><ChevronRight /></button>
                 </>
               )}
             </div>
 
-            <div className="p-5">
-              <h2 style={{ color: PERSIMMON }} className="text-[28px] font-black leading-none mb-1">
-                {farmData.price} <span className="text-sm font-bold opacity-70">ل.س / ليلة</span>
+            {/* قسم المعلومات */}
+            <div className="p-5 md:p-8 lg:p-10 flex flex-col grow justify-center w-full md:w-1/2 lg:w-[45%]">
+              <h2 style={{ color: PERSIMMON }} className="text-[28px] md:text-[32px] font-black leading-none mb-2">
+                {farmData.price} <span className="text-sm md:text-base font-bold opacity-70">ل.س / ليلة</span>
               </h2>
-              <h3 className="text-xl font-bold text-[#232528] mt-2">{farmData.title}</h3>
-              <p className="text-sm text-gray-500 mb-4">{farmData.location}</p>
+              <h3 className="text-xl md:text-2xl font-bold text-[#232528] mt-2 leading-tight">{farmData.title}</h3>
+              <p className="text-sm md:text-base text-gray-500 mb-6 md:mb-8">{farmData.location}</p>
 
               {/* Owner Action Buttons */}
-              <div className="flex gap-3">
+              <div className="flex gap-3 md:gap-4 mt-auto">
                  <Link href={`/owner/calendar/${farmData.id}`} className="flex-1">
-                   <motion.button whileTap={{ scale: 0.96 }} className="w-full h-[50px] bg-[#232528] text-white rounded-xl font-bold text-[15px] shadow-md flex justify-center items-center gap-2">
+                   <motion.button whileTap={{ scale: 0.96 }} className="w-full h-[50px] md:h-[60px] bg-[#232528] hover:bg-black transition-colors text-white rounded-xl font-bold text-[15px] md:text-lg shadow-md flex justify-center items-center gap-2">
                      📅 إدارة الروزنامة
                    </motion.button>
                  </Link>
@@ -141,7 +143,7 @@ export default function OwnerDashboard() {
                  <Link href={`/farms/${farmData.id}`}>
                    <motion.button 
                      whileTap={{ scale: 0.96 }} 
-                     className="w-[50px] h-[50px] bg-gray-100 text-[#0288D1] rounded-xl flex justify-center items-center shadow-sm hover:bg-[#0288D1] hover:text-white transition-colors"
+                     className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-gray-100 text-[#0288D1] rounded-xl flex justify-center items-center shadow-sm hover:bg-[#0288D1] hover:text-white transition-colors text-lg md:text-xl"
                      title="مشاهدة صفحة المزرعة كاملة"
                    >
                      👁️
@@ -151,7 +153,7 @@ export default function OwnerDashboard() {
             </div>
           </motion.div>
         ) : (
-          <div className="text-center text-gray-400 mt-10 font-bold">لا يوجد مزارع مضافة حتى الآن.</div>
+          <div className="text-center text-gray-400 mt-10 md:mt-20 font-bold text-lg">لا يوجد مزارع مضافة حتى الآن.</div>
         )}
       </main>
     </div>

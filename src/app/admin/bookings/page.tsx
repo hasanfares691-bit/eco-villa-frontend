@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { api } from '../../../lib/api';
 
 const PlusIcon = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>;
-const CloseIcon = () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
+const CloseIcon = () => <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
 const CalendarIcon = () => <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
 const UserIcon = () => <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>;
 const BackIcon = () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>;
@@ -58,7 +58,6 @@ export default function AdminBookings() {
 
   useEffect(() => { fetchBookings(); }, []);
 
-  // ⚡️ المنطق السحري للفلترة الفورية
   const filteredBookings = bookings.filter(b => {
     const matchStatus = filterStatus === 'all' || b.status === filterStatus;
     const matchFarm = filterFarmId === 'all' || b.farmId === filterFarmId;
@@ -141,29 +140,32 @@ export default function AdminBookings() {
   };
 
   return (
-    <div dir="rtl" className="max-w-md mx-auto min-h-screen bg-[#F8F9FA] pb-24 font-sans relative shadow-2xl border-x border-gray-200">
-      <header className="bg-[#1E1E2D] px-5 pt-10 pb-5 shadow-lg sticky top-0 z-30 flex justify-between items-center text-white">
-        <div className="flex items-center gap-3">
-           <button onClick={() => router.push('/admin/dashboard')} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition"><BackIcon /></button>
-           <div><h1 className="text-xl font-black text-[#7CB342]">الرادار الشامل</h1><p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Bookings Management</p></div>
+    // 🔴 إزالة القيود الضيقة ليأخذ الموقع العرض الكامل
+    <div dir="rtl" className="w-full mx-auto min-h-screen bg-[#F8F9FA] pb-24 font-sans relative flex flex-col">
+      <header className="bg-[#1E1E2D] px-6 md:px-10 lg:px-16 pt-8 md:pt-10 pb-5 shadow-lg sticky top-0 z-30 flex justify-between items-center text-white shrink-0">
+        <div className="max-w-7xl mx-auto flex justify-between items-center w-full">
+          <div className="flex items-center gap-3 md:gap-4">
+             <button onClick={() => router.push('/admin/dashboard')} className="p-2 md:p-3 bg-white/10 rounded-full hover:bg-white/20 transition active:scale-95"><BackIcon /></button>
+             <div><h1 className="text-xl md:text-3xl font-black text-[#7CB342]">الرادار الشامل</h1><p className="text-[10px] md:text-xs text-gray-400 font-bold uppercase mt-1">Bookings Management</p></div>
+          </div>
+          <button onClick={openAddModal} className="bg-[#7CB342] text-white px-4 py-2.5 md:px-5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold shadow-md hover:bg-[#689f38] transition active:scale-95 flex items-center gap-1.5 md:gap-2">
+            <PlusIcon /> إضافة
+          </button>
         </div>
-        <button onClick={openAddModal} className="bg-[#7CB342] text-white px-3 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-[#689f38] transition active:scale-95 flex items-center gap-1">
-          <PlusIcon /> إضافة
-        </button>
       </header>
 
-      {/* 🔍 قسم الفلاتر الذكية */}
-      <div className="px-5 pt-5 pb-2">
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+      <main className="max-w-7xl mx-auto w-full px-5 md:px-10 pt-6 md:pt-8 flex-1">
+        {/* 🔍 قسم الفلاتر الذكية */}
+        <div className="bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 space-y-4 md:space-y-0 md:flex md:gap-4 mb-6 md:mb-8">
           <input 
             type="text" 
             placeholder="بحث بالاسم، رقم الفاتورة، أو الموبايل..." 
             value={filterSearch} 
             onChange={e => setFilterSearch(e.target.value)} 
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-bold text-gray-800 outline-none focus:border-blue-500 transition-colors" 
+            className="w-full md:w-1/2 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl p-3.5 md:p-4 text-sm md:text-base font-bold text-gray-800 outline-none focus:border-blue-500 transition-colors" 
           />
-          <div className="flex gap-2">
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="flex-1 bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold text-gray-700 outline-none">
+          <div className="flex flex-col md:flex-row gap-3 md:w-1/2">
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl p-3.5 md:p-4 text-sm font-bold text-gray-700 outline-none">
               <option value="all">كل الحالات</option>
               <option value="pending_hold">⏳ معلق</option>
               <option value="deposit_paid">💰 تم دفع العربون</option>
@@ -171,126 +173,89 @@ export default function AdminBookings() {
               <option value="done">🔑 مُنفذ</option>
               <option value="cancelled">❌ ملغى</option>
             </select>
-            <select value={filterFarmId} onChange={e => setFilterFarmId(e.target.value)} className="flex-1 bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold text-gray-700 outline-none truncate">
+            <select value={filterFarmId} onChange={e => setFilterFarmId(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl p-3.5 md:p-4 text-sm font-bold text-gray-700 outline-none truncate">
               <option value="all">كل المزارع</option>
               {farms.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
             </select>
           </div>
         </div>
-      </div>
 
-      <div className="p-5 space-y-4 pt-2">
-        <div className="text-xs font-bold text-gray-500 px-1">نتائج البحث: {filteredBookings.length} حجز</div>
-        
-        {isLoading ? (
-          <div className="flex justify-center p-10"><div className="w-8 h-8 border-4 border-[#7CB342] border-t-transparent rounded-full animate-spin"></div></div>
-        ) : filteredBookings.length === 0 ? (
-          <div className="text-center p-10 bg-white rounded-3xl border border-gray-100 shadow-sm"><span className="text-4xl mb-3 block opacity-50">🔍</span><p className="text-gray-500 font-bold">لا يوجد نتائج مطابقة</p></div>
-        ) : (
-          filteredBookings.map((booking, idx) => (
-            <div key={booking?.id || idx} onClick={() => openEditModal(booking)} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 relative cursor-pointer hover:shadow-md transition active:scale-[0.98]">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <span className="text-[10px] font-black bg-gray-100 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider border">{booking?.invoiceId || 'INV-NEW'}</span>
-                  <h3 className="font-bold text-gray-800 mt-1">{booking?.tenantName || 'بدون اسم'}</h3>
+        <div className="space-y-4 md:space-y-6">
+          <div className="text-xs md:text-sm font-bold text-gray-500 px-2 md:px-4">نتائج البحث: {filteredBookings.length} حجز</div>
+          
+          {isLoading ? (
+            <div className="flex justify-center p-16 md:p-20"><div className="w-10 h-10 md:w-12 md:h-12 border-4 border-[#7CB342] border-t-transparent rounded-full animate-spin"></div></div>
+          ) : filteredBookings.length === 0 ? (
+            <div className="text-center p-16 md:p-24 bg-white rounded-3xl border border-gray-100 shadow-sm"><span className="text-5xl md:text-6xl mb-4 block opacity-50">🔍</span><p className="text-gray-500 font-bold md:text-lg">لا يوجد نتائج مطابقة</p></div>
+          ) : (
+            // 🔴 عرض الكروت كشبكة على الشاشات الكبيرة
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {filteredBookings.map((booking, idx) => (
+                <div key={booking?.id || idx} onClick={() => openEditModal(booking)} className="bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 relative cursor-pointer hover:shadow-md hover:border-blue-200 transition-all active:scale-[0.98] group">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <span className="text-[10px] md:text-xs font-black bg-gray-100 text-gray-600 px-2.5 py-1.5 rounded-md uppercase tracking-wider border group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">{booking?.invoiceId || 'INV-NEW'}</span>
+                      <h3 className="font-bold text-gray-800 mt-2 md:text-lg">{booking?.tenantName || 'بدون اسم'}</h3>
+                    </div>
+                    <span className={`text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-md border ${getStatusColor(booking?.status)}`}>{getStatusLabel(booking?.status)}</span>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 md:gap-3 bg-gray-50 p-3 md:p-4 rounded-xl border border-gray-100">
+                    <div className="flex items-center gap-2 text-xs md:text-sm text-gray-600 font-medium"><CalendarIcon /> {safeDate(booking?.checkinDate)} ({booking?.nights || 0} ليلة)</div>
+                    <div className="flex items-center gap-2 text-xs md:text-sm text-gray-600 font-medium"><UserIcon /> {booking?.farmName || booking?.farmId || 'غير محدد'}</div>
+                  </div>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-md border ${getStatusColor(booking?.status)}`}>{getStatusLabel(booking?.status)}</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2 mb-3">
-                <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium"><CalendarIcon /> {safeDate(booking?.checkinDate)} ({booking?.nights || 0} ليلة)</div>
-                <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium"><UserIcon /> {booking?.farmName || booking?.farmId || 'غير محدد'}</div>
-              </div>
+              ))}
             </div>
-          ))
-        )}
-      </div>
+          )}
+        </div>
+      </main>
 
+      {/* 🔴 مودال الإضافة/التعديل: متمركز في المنتصف على الشاشات الكبيرة */}
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", bounce: 0, duration: 0.4 }} className="fixed inset-0 bg-[#F8F9FA] z-50 overflow-y-auto flex flex-col max-w-md mx-auto border-x border-gray-200">
-            <div className="sticky top-0 bg-white px-5 py-4 border-b border-gray-100 flex justify-between items-center z-10 shadow-sm shrink-0">
-              <h2 className="text-lg font-black text-[#232528]">{editingBooking ? 'تعديل الحجز' : 'إضافة حجز جديد'}</h2>
-              <button onClick={() => setIsModalOpen(false)} type="button" className="p-2 bg-gray-100 rounded-full text-gray-600 active:scale-95"><CloseIcon /></button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-5 space-y-6 flex-1 overflow-y-auto">
-              
-              {editingBooking && (
-                <div className="bg-gray-100 p-4 rounded-2xl border border-gray-200 grid grid-cols-2 gap-3">
-                   <div><label className="text-[10px] font-bold text-gray-500 block mb-1">13. الفاتورة</label><div className="text-sm font-black text-gray-800 tracking-widest">{editingBooking.invoiceId}</div></div>
-                   <div><label className="text-[10px] font-bold text-gray-500 block mb-1">1. تاريخ الإنشاء</label><div className="text-[11px] font-bold text-gray-800 mt-1">{new Date(editingBooking.createdAt).toLocaleString('ar-SY')}</div></div>
-                </div>
-              )}
-
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-                <h3 className="text-sm font-black text-[#7CB342] flex items-center gap-2">👤 بيانات المستأجر</h3>
-                <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">2. اسم المستأجر</label><input required type="text" value={formData.tenantName} onChange={e=>setFormData({...formData, tenantName: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" /></div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">3. الرقم الأساسي</label><input required type="tel" dir="ltr" value={formData.tenantPhone} onChange={e=>setFormData({...formData, tenantPhone: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" /></div>
-                  <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">12. أرقام إضافية</label><input type="text" dir="ltr" value={formData.contactNumbers} onChange={e=>setFormData({...formData, contactNumbers: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" placeholder="09xx, 09yy" /></div>
-                </div>
+          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center pointer-events-none pb-safe md:pb-0 px-0 md:px-4 lg:px-8">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" onClick={() => setIsModalOpen(false)} />
+            
+            <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }} transition={{ type: "spring", bounce: 0, duration: 0.4 }} className="w-full md:max-w-2xl lg:max-w-4xl bg-[#F8F9FA] rounded-t-3xl md:rounded-3xl shadow-2xl relative z-10 flex flex-col pointer-events-auto h-[95vh] md:max-h-[90vh]">
+              <div className="bg-white p-5 md:p-6 border-b border-gray-100 flex justify-between items-center shrink-0 md:rounded-t-3xl">
+                <h2 className="text-lg md:text-xl font-black text-[#232528]">{editingBooking ? 'تعديل الحجز' : 'إضافة حجز جديد'}</h2>
+                <button onClick={() => setIsModalOpen(false)} type="button" className="p-2 md:p-3 bg-gray-100 rounded-full text-gray-600 active:scale-95 hover:bg-gray-200 transition"><CloseIcon /></button>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-                <h3 className="text-sm font-black text-[#0288D1] flex items-center gap-2">📅 المزرعة والتاريخ</h3>
-                <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">4. المزرعة المحجوزة</label><select required value={formData.farmId} onChange={e=>setFormData({...formData, farmId: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none font-bold text-blue-600"><option value="">-- اختر --</option>{Array.isArray(farms) && farms.map(f=><option key={f?.id} value={f?.id}>{f?.name} ({f?.admin_code})</option>)}</select></div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">5. تاريخ الدخول</label><input required type="date" value={formData.checkinDate} onChange={e=>setFormData({...formData, checkinDate: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" /></div>
-                  <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">الليالي</label><input required type="number" min="1" value={formData.nights} onChange={e=>setFormData({...formData, nights: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" /></div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                   <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">6. الضيوف</label><select value={formData.guestType} onChange={e=>setFormData({...formData, guestType: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none"><option value="families">عائلات</option><option value="groups">عائلات وكروبات</option></select></div>
-                   <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">7. العدد</label><input type="number" value={formData.guestCount} onChange={e=>setFormData({...formData, guestCount: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" /></div>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-                <h3 className="text-sm font-black text-[#FF7E5F] flex items-center gap-2">💰 المالية والإدارة</h3>
-                <div>
-                  <label className="text-xs font-bold text-gray-600 mb-1.5 block">8. دورة حياة الحجز</label>
-                  <select value={formData.status} onChange={e=>setFormData({...formData, status: e.target.value})} className={`w-full border rounded-xl p-3.5 text-sm outline-none font-bold ${getStatusColor(formData.status)}`}>
-                    <option value="pending_hold">⏳ معلق (بانتظار الدفع) - روزنامة برتقالي</option>
-                    <option value="completed">✅ تم الدفع والمطابقة - روزنامة أحمر</option>
-                    <option value="done">🔑 مُنفذ / تم التسليم - روزنامة أحمر</option>
-                    <option value="cancelled">❌ ملغى (متاح)</option>
-                  </select>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">المبلغ الإجمالي</label><input required type="number" value={formData.totalAmount} onChange={e=>setFormData({...formData, totalAmount: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" /></div>
-                  <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">11. مقدار الدفع (العربون)</label><input required type="number" value={formData.depositAmount} onChange={e=>setFormData({...formData, depositAmount: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none text-[#FF7E5F] font-bold" /></div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-bold text-gray-600 mb-1.5 block">9. طريقة الدفع</label>
-                    <select value={formData.paymentMethod} onChange={e=>setFormData({...formData, paymentMethod: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none"><option value="cash">كاش</option><option value="transfer">حوالة هرم/شركة</option><option value="bank">بنك</option></select>
+              <form onSubmit={handleSubmit} className="p-5 md:p-8 space-y-6 md:space-y-8 flex-1 overflow-y-auto pb-24 md:pb-8">
+                
+                {editingBooking && (
+                  <div className="bg-gray-100 p-4 md:p-5 rounded-2xl border border-gray-200 grid grid-cols-2 gap-3 md:gap-5">
+                     <div><label className="text-[10px] md:text-xs font-bold text-gray-500 block mb-1">13. الفاتورة</label><div className="text-sm md:text-base font-black text-gray-800 tracking-widest">{editingBooking.invoiceId}</div></div>
+                     <div><label className="text-[10px] md:text-xs font-bold text-gray-500 block mb-1">1. تاريخ الإنشاء</label><div className="text-[11px] md:text-xs font-bold text-gray-800 mt-1">{new Date(editingBooking.createdAt).toLocaleString('ar-SY')}</div></div>
                   </div>
-                  <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">10. معلومات الدفع</label><input type="text" value={formData.paymentInfo} onChange={e=>setFormData({...formData, paymentInfo: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 text-sm outline-none" placeholder="رقم حوالة، هوية..." /></div>
-                </div>
-                <div className="bg-gray-100 p-4 rounded-xl border border-gray-200">
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs font-bold text-gray-700">14. عمولة المنصة (%)</label>
-                    <div className="text-[10px] font-black text-gray-500 bg-white px-2 py-1 rounded border">تساوي: <span className="text-[#7CB342]">{commissionInSYP ? commissionInSYP.toLocaleString() : 0}</span> ل.س</div>
+                )}
+
+                {/* 🔴 الفورم مقسم لعمودين على اللابتوب */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                  <div className="space-y-6 md:space-y-8">
+                    <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4"><h3 className="text-sm md:text-base font-black text-[#7CB342] flex items-center gap-2">👤 بيانات المستأجر</h3><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">2. اسم المستأجر</label><input required type="text" value={formData.tenantName} onChange={e=>setFormData({...formData, tenantName: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" /></div><div className="grid grid-cols-2 gap-3 md:gap-4"><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">3. الرقم الأساسي</label><input required type="tel" dir="ltr" value={formData.tenantPhone} onChange={e=>setFormData({...formData, tenantPhone: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" /></div><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">12. أرقام إضافية</label><input type="text" dir="ltr" value={formData.contactNumbers} onChange={e=>setFormData({...formData, contactNumbers: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" placeholder="09xx, 09yy" /></div></div></div>
+                    <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4"><h3 className="text-sm md:text-base font-black text-[#0288D1] flex items-center gap-2">📅 المزرعة والتاريخ</h3><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">4. المزرعة المحجوزة</label><select required value={formData.farmId} onChange={e=>setFormData({...formData, farmId: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none font-bold text-blue-600 focus:border-blue-500"><option value="">-- اختر --</option>{Array.isArray(farms) && farms.map(f=><option key={f?.id} value={f?.id}>{f?.name} ({f?.admin_code})</option>)}</select></div><div className="grid grid-cols-2 gap-3 md:gap-4"><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">5. تاريخ الدخول</label><input required type="date" value={formData.checkinDate} onChange={e=>setFormData({...formData, checkinDate: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" /></div><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">الليالي</label><input required type="number" min="1" value={formData.nights} onChange={e=>setFormData({...formData, nights: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" /></div></div><div className="grid grid-cols-2 gap-3 md:gap-4"><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">6. الضيوف</label><select value={formData.guestType} onChange={e=>setFormData({...formData, guestType: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500"><option value="families">عائلات</option><option value="groups">عائلات وكروبات</option></select></div><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">7. العدد</label><input type="number" value={formData.guestCount} onChange={e=>setFormData({...formData, guestCount: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" /></div></div></div>
                   </div>
-                  <input type="number" min="0" max="100" value={formData.commissionRate} onChange={e=>setFormData({...formData, commissionRate: Number(e.target.value)})} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm outline-none font-bold" />
+
+                  <div className="space-y-6 md:space-y-8">
+                    <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4"><h3 className="text-sm md:text-base font-black text-[#FF7E5F] flex items-center gap-2">💰 المالية والإدارة</h3><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">8. دورة حياة الحجز</label><select value={formData.status} onChange={e=>setFormData({...formData, status: e.target.value})} className={`w-full border rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none font-bold ${getStatusColor(formData.status)}`}><option value="pending_hold">⏳ معلق (بانتظار الدفع) - روزنامة برتقالي</option><option value="completed">✅ تم الدفع والمطابقة - روزنامة أحمر</option><option value="done">🔑 مُنفذ / تم التسليم - روزنامة أحمر</option><option value="cancelled">❌ ملغى (متاح)</option></select></div><div className="grid grid-cols-2 gap-3 md:gap-4"><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">المبلغ الإجمالي</label><input required type="number" value={formData.totalAmount} onChange={e=>setFormData({...formData, totalAmount: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" /></div><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">11. مقدار الدفع (العربون)</label><input required type="number" value={formData.depositAmount} onChange={e=>setFormData({...formData, depositAmount: Number(e.target.value)})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none text-[#FF7E5F] font-bold focus:border-[#FF7E5F]" /></div></div><div className="grid grid-cols-2 gap-3 md:gap-4"><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">9. طريقة الدفع</label><select value={formData.paymentMethod} onChange={e=>setFormData({...formData, paymentMethod: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500"><option value="cash">كاش</option><option value="transfer">حوالة هرم/شركة</option><option value="bank">بنك</option></select></div><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">10. معلومات الدفع</label><input type="text" value={formData.paymentInfo} onChange={e=>setFormData({...formData, paymentInfo: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none focus:border-blue-500" placeholder="رقم حوالة، هوية..." /></div></div><div className="bg-gray-100 p-4 md:p-5 rounded-xl border border-gray-200"><div className="flex justify-between items-center mb-2"><label className="text-xs md:text-sm font-bold text-gray-700">14. عمولة المنصة (%)</label><div className="text-[10px] md:text-xs font-black text-gray-500 bg-white px-2.5 py-1.5 rounded-lg border">تساوي: <span className="text-[#7CB342]">{commissionInSYP ? commissionInSYP.toLocaleString() : 0}</span> ل.س</div></div><input type="number" min="0" max="100" value={formData.commissionRate} onChange={e=>setFormData({...formData, commissionRate: Number(e.target.value)})} className="w-full bg-white border border-gray-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none font-bold focus:border-blue-500" /></div><div><label className="text-xs md:text-sm font-bold text-gray-600 mb-1.5 block">15. ملاحظات الفريق (سرية)</label><textarea value={formData.adminNotes} onChange={e=>setFormData({...formData, adminNotes: e.target.value})} className="w-full bg-yellow-50 border border-yellow-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none h-20 md:h-24 focus:border-yellow-400" placeholder="أي ملاحظات تخص الزبون أو الحجز..."></textarea></div></div>
+                    <div className="bg-blue-50/50 p-5 md:p-6 rounded-2xl border border-blue-100 space-y-4"><label className="flex items-center gap-3 cursor-pointer"><input type="checkbox" checked={formData.depositDeliveredToOwner} onChange={e=>setFormData({...formData, depositDeliveredToOwner: e.target.checked})} className="w-5 h-5 md:w-6 md:h-6 accent-blue-600" /><span className="text-sm md:text-base font-bold text-blue-900">16. تم تسليم العربون لصاحب المزرعة؟</span></label>{formData.depositDeliveredToOwner && (<div><label className="text-xs md:text-sm font-bold text-blue-800 mb-1.5 block">17. تاريخ/رقم حوالة التسليم للمالك</label><input type="text" value={formData.depositDeliveryInfo} onChange={e=>setFormData({...formData, depositDeliveryInfo: e.target.value})} className="w-full bg-white border border-blue-200 rounded-xl p-3.5 md:p-4 text-sm md:text-base outline-none font-bold focus:border-blue-500" placeholder="حوالة الهرم رقم..." /></div>)}</div>
+                  </div>
                 </div>
-                <div><label className="text-xs font-bold text-gray-600 mb-1.5 block">15. ملاحظات الفريق (سرية)</label><textarea value={formData.adminNotes} onChange={e=>setFormData({...formData, adminNotes: e.target.value})} className="w-full bg-yellow-50 border border-yellow-200 rounded-xl p-3.5 text-sm outline-none h-20" placeholder="أي ملاحظات تخص الزبون أو الحجز..."></textarea></div>
+
+                <div className="pt-4 md:pt-6 pb-6 hidden md:block">
+                  <button type="submit" disabled={isLoading} className="w-full py-4 md:py-5 bg-[#1E1E2D] text-white rounded-xl md:rounded-2xl font-black text-lg md:text-xl shadow-lg hover:bg-black active:scale-95 disabled:opacity-50 transition">{isLoading ? 'جاري الحفظ...' : 'حفظ بيانات الحجز'}</button>
+                </div>
+              </form>
+
+              {/* زر الحفظ على الموبايل كشريط عائم */}
+              <div className="bg-white p-4 border-t border-gray-200 shrink-0 md:hidden pb-safe">
+                 <button onClick={handleSubmit} disabled={isLoading} className="w-full py-4 bg-[#1E1E2D] text-white rounded-xl font-black text-lg shadow-lg hover:bg-black active:scale-95 disabled:opacity-50 transition">{isLoading ? 'جاري الحفظ...' : 'حفظ بيانات الحجز'}</button>
               </div>
 
-              <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-100 space-y-4">
-                 <label className="flex items-center gap-3 cursor-pointer">
-                   <input type="checkbox" checked={formData.depositDeliveredToOwner} onChange={e=>setFormData({...formData, depositDeliveredToOwner: e.target.checked})} className="w-5 h-5 accent-blue-600" />
-                   <span className="text-sm font-bold text-blue-900">16. تم تسليم العربون لصاحب المزرعة؟</span>
-                 </label>
-                 {formData.depositDeliveredToOwner && (
-                   <div><label className="text-xs font-bold text-blue-800 mb-1.5 block">17. تاريخ/رقم حوالة التسليم للمالك</label><input type="text" value={formData.depositDeliveryInfo} onChange={e=>setFormData({...formData, depositDeliveryInfo: e.target.value})} className="w-full bg-white border border-blue-200 rounded-xl p-3 text-sm outline-none font-bold" placeholder="حوالة الهرم رقم..." /></div>
-                 )}
-              </div>
-
-              <div className="pt-2 pb-6">
-                <button type="submit" disabled={isLoading} className="w-full py-4 bg-[#1E1E2D] text-white rounded-xl font-black text-lg shadow-lg hover:bg-black active:scale-95 disabled:opacity-50">{isLoading ? 'جاري الحفظ...' : 'حفظ بيانات الحجز'}</button>
-              </div>
-            </form>
-          </motion.div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
